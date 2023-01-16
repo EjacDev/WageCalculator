@@ -7,8 +7,9 @@ if __name__ == "__main__":
     args = parser.parse_args()
     main = Main(args.filename)
     main.load_file()
-    main.calculate_all_schedules()
-    main.print_total()
+    for employee in main.employees:
+        main.calculate_all_schedules(employee)
+        main.print_total_wage(employee)  
 
 
 

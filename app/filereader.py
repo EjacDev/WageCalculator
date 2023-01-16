@@ -1,11 +1,27 @@
+import os
 import datetime
 from app.models import EmployeeSchedule,WorkingHour
 
 class FileReader:
+    """Process the file 
+    """
     def __init__(self, file_name:str) -> None:
+        """initialize the object and set the filename
+
+        Args:
+            file_name (str): filename to process
+        """
         self.file_name = file_name
 
     def read(self):
+        """Read the file and create the list of EmployeeSchedule
+
+        Returns:
+            List: List of EmployeeSchedule from the file
+        """
+        _, file_ext = os.path.splitext(self.file_name)
+        if file_ext != ".txt":
+            raise ValueError(f"Invalid file format: {file_ext}. Only .txt files are supported.")
         employees = list()
         schedule_parser = ScheduleParser()
         try:
@@ -27,7 +43,11 @@ class FileReader:
         return employees
 
 class ScheduleParser:
+    """Parse the schedule string from file, to a list of objects
+    """
     def __init__(self) -> None:
+        """set the days abbreviations
+        """
         self.days = {
             "MO": "Monday",
             "TU": "Tuesday",
@@ -39,7 +59,15 @@ class ScheduleParser:
         }
         self.hour_format = "%H:%M"
 
-    def parse_schedule_string(self, schedule_string):
+    def parse_schedule_string(self, schedule_string:str):
+        """Parse the schedule string from file, to a object list
+
+        Args:
+            schedule_string (str): Schedule string from file
+
+        Returns:
+            List(WorkingHour): List of the full employee schedule
+        """
         shifts = schedule_string.split(",")
         schedule = list()
         for shift in shifts:
@@ -61,6 +89,12 @@ class ScheduleParser:
         return schedule
 
     def check_repeated_hours(self, current_working_hour, schedule):
+        """Check if the current_working_hour has a conflict with another schedule
+
+        Args:
+            current_working_hour (WorkingHour): Current working hour to compare
+            schedule (List(WorkingHour)): List of the current schedule
+        """
         for working_hour in schedule:
             if current_working_hour.day == working_hour.day and current_working_hour.end_time > working_hour.start_time and current_working_hour.start_time < working_hour.end_time:
                     raise ValueError(f"There are duplicated working hours.")

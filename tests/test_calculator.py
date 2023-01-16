@@ -5,6 +5,10 @@ from app.calculator import WageCalculator
 from app.models import WorkingHour
 
 def test_calculate_hours():
+    """Test the time difference calculation
+        The hour `00:00` represents `24:00` as the maximum,
+        for example between `18:00` and `00:00` there is `6` hours.
+    """
     assert WageCalculator.calculate_hours(time(1,0),time(10,0)) == 9
     assert WageCalculator.calculate_hours(time(0,0),time(0,0)) == 24
     assert WageCalculator.calculate_hours(time(18,0),time(0,0)) == 6
@@ -12,6 +16,8 @@ def test_calculate_hours():
     assert WageCalculator.calculate_hours(time(0,0),time(23,0)) == 23
 
 def test_calculate_wage():
+    """Test different wage calculation applying diffent day rates
+    """
     calculator = WageCalculator(WorkingHour.get_by_day("NoExists"))
     assert calculator.calculate_wage(time(0,0),time(0,0)) == 0
     calculator = WageCalculator(WorkingHour.get_by_day("Monday"))

@@ -4,6 +4,8 @@ import pytest
 from app.filereader import ScheduleParser,FileReader 
 
 def test_schedule_parser_invalid():
+    """Test the invalid possibilities for the schedule string
+    """
     schedule_parser = ScheduleParser()
     with pytest.raises(ValueError, match="Invalid day: 'AB'"):
         schedule_parser.parse_schedule_string("AB10:00-12:00")
@@ -24,6 +26,8 @@ def test_schedule_parser_invalid():
 
 
 def test_schedule_parser():
+    """Test a correct schedule string parse
+    """
     schedule_parser = ScheduleParser()
     schedule_string = "MO10:00-12:00,TU10:00-12:00,TH01:00-03:00,SA14:00-18:00,SU20:00-21:00"
     schedules = schedule_parser.parse_schedule_string(schedule_string)
@@ -46,7 +50,8 @@ def test_schedule_parser():
 
 
 def test_file_loader_invalid():
-    with pytest.raises(ValueError, match="File not found: schedule_not_exist. Error: \\[Errno 2\\] No such file or directory: 'schedule_not_exist'"):
+    """Test the invalid formats in the file lines"""
+    with pytest.raises(ValueError, match="Invalid file format: . Only .txt files are supported."):
         file_loader = FileReader("schedule_not_exist")
         file_loader.read()
     with pytest.raises(ValueError, match="Invalid line in the file: RENEMO10:00-12:00,TU10:00-12:00,TH01:00-03:00,SA14:00-18:00,SU20:00-21:00\n Error: Invalid name separator."):
@@ -60,9 +65,11 @@ def test_file_loader_invalid():
         file_loader.read()
 
 def test_file_loader():
+    """Test a correct file readed
+    """
     file_loader = FileReader("tests/data_test.txt")
     employees = file_loader.read()
-    assert len(employees) == 2
+    assert len(employees) == 7
     assert employees[0].name == "RENE"
     assert len(employees[0].schedule) == 5
     assert employees[0].schedule[0].day == "Monday"
