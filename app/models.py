@@ -9,7 +9,7 @@ class WorkingHour:
         self.rate = rate
 
     @staticmethod
-    def get_by_day(day) -> List:
+    def get_by_day(day:str) -> List:
         
         weekday_time_blocks = [
             WorkingHour(day, datetime.time(0, 0), datetime.time(9, 0), 25),
@@ -23,13 +23,15 @@ class WorkingHour:
         ]
         if day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']:
             return weekday_time_blocks
-        else:
+        if day in ['Saturday', 'Sunday']:
             return weekend_time_blocks
+        else:
+            return list()
 
 class Employee:
     def __init__(self, name:str) -> None:
         self.name = name
-        #Aditional personal employee informationß
+        #Aditional personal employee information
 
 class EmployeeSchedule(Employee):
     def __init__(self, name:str, schedule:List[WorkingHour]) -> None:
